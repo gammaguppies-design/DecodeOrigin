@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.QuinticSpline2D;
 import java.util.LinkedList;
 
 
-public abstract class   XDriveAuto extends LinearOpMode {
+public abstract class XDriveAuto extends LinearOpMode {
 
     protected XDrive bot;
 

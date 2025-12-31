@@ -311,12 +311,13 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
                         rightIntake.setPower(0.8);
                         leftIntake.setPower(0.8);
+                        Roller.setPower(-1);
                         leftIntakeRotate.setPosition(0.3);
                         rightIntakeRotate.setPosition(0.7);
                         ramp.setPosition(15);
+                        sleep(500);
                         flyWheel.setPower(-1);
                         Flicker.setPosition(-3);
-                        Roller.setPower(0);
                     }
                 case INTAKE2:
                     if (Toggledy2){

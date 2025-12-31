@@ -15,13 +15,14 @@ import org.firstinspires.ftc.teamcode.xdrive.XDriveAuto;
 
 @Autonomous
 public class DriveBaseTestAuto extends XDriveAuto {
-    protected XDrive bot;
+//    protected XDrive bot;
 
+
+    XDrive bot = new XDrive();
 
     public void setBot(XDrive bot){
         this.bot = bot;
     }
-
 
         @Override
         public void runOpMode() throws InterruptedException {

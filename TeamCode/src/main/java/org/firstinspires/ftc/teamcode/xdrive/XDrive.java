@@ -54,10 +54,10 @@ public class XDrive{
         }
 
         // Get the DC Motors
-        bl = hwMap.get(DcMotorEx.class, "back_left_motor");
-        fl = hwMap.get(DcMotorEx.class, "front_left_motor");
-        fr = hwMap.get(DcMotorEx.class, "front_right_motor");
-        br = hwMap.get(DcMotorEx.class, "back_right_motor");
+        bl = hwMap.get(DcMotorEx.class, "leftBackDrive");
+        fl = hwMap.get(DcMotorEx.class, "leftFrontDrive");
+        fr = hwMap.get(DcMotorEx.class, "rightFrontDrive");
+        br = hwMap.get(DcMotorEx.class, "rightBackDrive");
 
         // Set zero power behavior to BRAKE for all motors (so robot stops quickly)
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
