@@ -83,21 +83,25 @@ public class NedBotTeleOp2 extends LinearOpMode {
     public DcMotor leftIntake = null; //the left intake motor
 
 
-    //    public DcMotor  armMotor    = null; //the arm motor
+  // intake smart servos
     public Servo ramp = null; //the active intake servo
     public Servo leftIntakeRotate = null;
     public Servo rightIntakeRotate = null;
+    public Servo Flicker = null;
 
+    // intake CRservo
     public CRServo flyWheel = null;
+    public CRServo Roller = null;
 
 
     Toggle toggleA2 = new Toggle(() -> gamepad2.a);
     Toggle toggleY1 = new Toggle(() -> gamepad1.y);
+    Toggle toggley2 = new Toggle(()-> gamepad2.y);
     Toggle toggleX2 = new Toggle(() -> gamepad2.x);
     Toggle toggleb2 = new Toggle(() -> gamepad2.b);
 
     enum slowMode {Fast, Slow}
-    enum IntakeState {OFF, INTAKE, DEPOSIT, DEPOSIT2}
+    enum IntakeState {OFF, INTAKE, DEPOSIT, INTAKE2}
 
     IntakeState intakeState = IntakeState.OFF;
 
@@ -139,23 +143,6 @@ public class NedBotTeleOp2 extends LinearOpMode {
     final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
     final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
 
-    /* Variables to store the speed the intake servo should be set at to intake, and deposit game elements. */
-//    final double INTAKE_COLLECT    = -1.0;
-//    final double INTAKE_OFF        =  1.0;
-//    final double INTAKE_DEPOSIT    =  0.5;
-
-    /* Variables to store the positions that the wrist should be set to when folding in, or folding out. */
-//    final double WRIST_FOLDED_IN   = 0.8333;
-//    final double WRIST_FOLDED_OUT  = 0.5;
-
-    /* A number in degrees that the triggers can adjust the arm position by */
-//    final double FUDGE_FACTOR = 15 * ARM_TICKS_PER_DEGREE;
-
-    /* Variables that are used to set the arm to a specific position */
-//    double armPosition = (int)ARM_COLLAPSED_INTO_ROBOT;
-    double armPositionFudgeFactor;
-
-
     @Override
     public void runOpMode() {
         /*
@@ -168,7 +155,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
         double max;
 
 
-        /* Define and Initialize Motors */
+      // drive motors
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive"); //the left front drive motor
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");//the left back Dive motor
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");//the right front drive motor
@@ -177,10 +164,17 @@ public class NedBotTeleOp2 extends LinearOpMode {
 //        intake motors
         rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");//the right intake motor
         leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");//the left intake motor
+
+        // intake CRservos
         flyWheel = hardwareMap.get(CRServo.class, "flyWheel");
+        Roller = hardwareMap.get(CRServo.class,"Roller");
+
+        // intake smart Servos
         ramp = hardwareMap.get(Servo.class, "ramp");
         leftIntakeRotate = hardwareMap.get(Servo.class, "left_Intake_Rotater");
         rightIntakeRotate = hardwareMap.get(Servo.class, "right_Intake_Rotater");
+        Flicker = hardwareMap.get(Servo.class,"Flicker");
+
 
 
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -210,6 +204,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
 //        ((DcMotorEx) armMotor).setCurrentAlert(5,CurrentUnit.AMPS);
 
 
+
+
         /* Send telemetry message to signify robot waiting */
         telemetry.addLine("Robot Ready.");
         telemetry.update();
@@ -225,10 +221,6 @@ public class NedBotTeleOp2 extends LinearOpMode {
             the joysticks decrease as you push them up. So reverse the Y axis. */
             forward = -gamepad1.left_stick_x;
             rotate = gamepad1.right_stick_y;
-
-
-
-
 
 
             /* Here we "mix" the input channels together to find the power to apply to each motor.
@@ -270,17 +262,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
             boolean ToggledX2 = toggleX2.update();
             boolean Toggledb2 = toggleb2.update();
             boolean ToggledY1 = toggleY1.update();
-
-
-
-
-
-
-
-
-
-
-
+            boolean Toggledy2 = toggley2.update();
 
 
             if (ToggledY1) {
@@ -294,6 +276,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
                     telemetry.update();
                 }
             }
+//                     controller 2
+
 
 
             switch (intakeState) {
@@ -305,6 +289,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         leftIntakeRotate.setPosition(0.5);
                         rightIntakeRotate.setPosition(0.5);
                         ramp.setPosition(0);
+                        Roller.setPower(0);
                     }
                 case INTAKE:
                     if (Toggledb2) {
@@ -316,25 +301,41 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         leftIntakeRotate.setPosition(0.5);
                         rightIntakeRotate.setPosition(0.5);
                         ramp.setPosition(0.2);
+                        Flicker.setPosition(3);
+                        Roller.setPower(1);
 
                     }
                 case DEPOSIT:
                     if (ToggledX2) {
                         rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
                         leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        rightIntake.setPower(0.6);
-                        leftIntake.setPower(0.6);
+                        rightIntake.setPower(0.8);
+                        leftIntake.setPower(0.8);
                         leftIntakeRotate.setPosition(0.3);
                         rightIntakeRotate.setPosition(0.7);
-                        ramp.setPosition(6);
+                        ramp.setPosition(15);
                         flyWheel.setPower(-1);
-
-
+                        Flicker.setPosition(-3);
+                        Roller.setPower(0);
                     }
+                case INTAKE2:
+                    if (Toggledy2){
+                        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+                        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+                        Roller.setPower(-1);
+                        leftIntakeRotate.setPosition(0.5);
+                        rightIntakeRotate.setPosition(0.5);
+                        flyWheel.setPower(1.5);
+                        rightIntake.setPower(0.2);
+                        leftIntake.setPower(0.2);
+                        ramp.setPosition(0);
+                        Flicker.setPosition(3);
+                    }
+
             }
+
+
 
         }
     }
 }
-
-

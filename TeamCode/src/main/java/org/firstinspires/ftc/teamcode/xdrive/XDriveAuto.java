@@ -25,7 +25,7 @@ public abstract class   XDriveAuto extends LinearOpMode {
     protected MotionProfile fast = new MotionProfile(25, 60, 25);
     protected MotionProfile superFast = new MotionProfile(30, 60, 30);
 
-    public void setBot(DeepBot bot){
+    public void setBot(XDrive bot){
         this.bot = bot;
     }
 

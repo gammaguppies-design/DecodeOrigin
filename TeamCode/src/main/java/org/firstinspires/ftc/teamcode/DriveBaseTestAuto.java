@@ -22,17 +22,23 @@ public class DriveBaseTestAuto extends XDriveAuto {
         this.bot = bot;
     }
 
-    public void runOpMode() throws InterruptedException {
 
-            //MotionProfile slow = new MotionProfile(10, 20, 10);
+        @Override
+        public void runOpMode() throws InterruptedException {
+            bot.init(hardwareMap);
+            super.setBot(bot);
+
+            waitForStart();
+
+
+            MotionProfile slow = new MotionProfile(10, 20, 10);
 
             bot.setspose(48, 60, -90);
 
-            driveTo(slow, 36, 54, 90,1);
-            turnTo(90,10,5,1);
+            driveTo(slow, 36, 54, 90, 1);
+            turnTo(90, 10, 5, 1);
 
-
-
+        }
 
     }
-}
+
