@@ -22,12 +22,12 @@
 
 package org.firstinspires.ftc.teamcode.nedbot;
 
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.util.Toggle;
 
@@ -67,7 +67,7 @@ import org.firstinspires.ftc.teamcode.util.Toggle;
 
 
 @TeleOp(name="NedBot Tele2", group="Robot")
-public class NedBotTeleOp2 extends LinearOpMode {
+public class Skelly extends LinearOpMode {
 
     boolean  yState = false;
 
@@ -79,32 +79,32 @@ public class NedBotTeleOp2 extends LinearOpMode {
     public DcMotor rightBackDrive = null; //the right back drivetrain motor
 
     //Arm
-    public DcMotor rightIntake = null; //the right intake motor
-    public DcMotor leftIntake = null; //the left intake motor
-
-
-  // intake smart servos
-    public Servo ramp = null; //the active intake servo
-    public Servo leftIntakeRotate = null;
-    public Servo rightIntakeRotate = null;
-    public Servo Flicker = null;
+//    public DcMotor rightIntake = null; //the right intake motor
+//    public DcMotor leftIntake = null; //the left intake motor
+//
+//
+//  // intake smart servos
+//    public Servo ramp = null; //the active intake servo
+//    public Servo leftIntakeRotate = null;
+//    public Servo rightIntakeRotate = null;
+//    public Servo Flicker = null;
 
     // intake CRservo
-    public CRServo flyWheel = null;
-    public CRServo Roller = null;
-    public CRServo Roller2 = null;
-
-
-    Toggle toggleA2 = new Toggle(() -> gamepad2.a);
+//    public CRServo flyWheel = null;
+//    public CRServo Roller = null;
+//    public CRServo Roller2 = null;
+//
+//
+//    Toggle toggleA2 = new Toggle(() -> gamepad2.a);
     Toggle toggleY1 = new Toggle(() -> gamepad1.y);
-    Toggle toggley2 = new Toggle(()-> gamepad2.y);
-    Toggle toggleX2 = new Toggle(() -> gamepad2.x);
-    Toggle toggleb2 = new Toggle(() -> gamepad2.b);
+//    Toggle toggley2 = new Toggle(()-> gamepad2.y);
+//    Toggle toggleX2 = new Toggle(() -> gamepad2.x);
+//    Toggle toggleb2 = new Toggle(() -> gamepad2.b);
 
     enum slowMode {Fast, Slow}
-    enum IntakeState {OFF, INTAKE, DEPOSIT, INTAKE2}
-
-    IntakeState intakeState = IntakeState.OFF;
+//    enum IntakeState {OFF, INTAKE, DEPOSIT, INTAKE2}
+//
+//    IntakeState intakeState = IntakeState.OFF;
 
     slowMode Slowmode = slowMode.Fast;
 
@@ -118,11 +118,11 @@ public class NedBotTeleOp2 extends LinearOpMode {
     We can multiply these two ratios together to get our final reduction of ~254.47:1.
     The motor's encoder counts 28 times per rotation. So in total you should see about 7125.16
     counts per rotation of the arm. We divide that by 360 to get the counts per degree. */
-    final double ARM_TICKS_PER_DEGREE =
-            28 // number of encoder ticks per rotation of the bare motor
-                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
-                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
-                    * 1 / 360.0; // we want ticks per degree, not per rotation
+//    final double ARM_TICKS_PER_DEGREE =
+//            28 // number of encoder ticks per rotation of the bare motor
+//                    * 250047.0 / 4913.0 // This is the exact gear ratio of the 50.9:1 Yellow Jacket gearbox
+//                    * 100.0 / 20.0 // This is the external gear reduction, a 20T pinion gear that drives a 100T hub-mount gear
+//                    * 1 / 360.0; // we want ticks per degree, not per rotation
 
 
     /* These constants hold the position that the arm is commanded to run to.
@@ -136,13 +136,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
     If you'd like it to move further, increase that number. If you'd like it to not move
     as far from the starting position, decrease it. */
 
-    final double ARM_COLLAPSED_INTO_ROBOT = 0;
-    final double ARM_COLLECT = 248 * ARM_TICKS_PER_DEGREE;
-    final double ARM_CLEAR_BARRIER = 230 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SPECIMEN = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_SCORE_SAMPLE_IN_LOW = 160 * ARM_TICKS_PER_DEGREE;
-    final double ARM_ATTACH_HANGING_HOOK = 120 * ARM_TICKS_PER_DEGREE;
-    final double ARM_WINCH_ROBOT = 15 * ARM_TICKS_PER_DEGREE;
+
 
     @Override
     public void runOpMode() {
@@ -163,19 +157,19 @@ public class NedBotTeleOp2 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");//the right back drive motor
 
 //        intake motors
-        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");//the right intake motor
-        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");//the left intake motor
-
-        // intake CRservos
-        flyWheel = hardwareMap.get(CRServo.class, "flyWheel");
-        Roller = hardwareMap.get(CRServo.class,"Roller");
-        Roller2 = hardwareMap.get(CRServo.class,"Roller2");
-
-        // intake smart Servos
-        ramp = hardwareMap.get(Servo.class, "ramp");
-        leftIntakeRotate = hardwareMap.get(Servo.class, "left_Intake_Rotater");
-        rightIntakeRotate = hardwareMap.get(Servo.class, "right_Intake_Rotater");
-        Flicker = hardwareMap.get(Servo.class,"Flicker");
+//        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");//the right intake motor
+//        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");//the left intake motor
+//
+//        // intake CRservos
+//        flyWheel = hardwareMap.get(CRServo.class, "flyWheel");
+//        Roller = hardwareMap.get(CRServo.class,"Roller");
+//        Roller2 = hardwareMap.get(CRServo.class,"Roller2");
+//
+//        // intake smart Servos
+//        ramp = hardwareMap.get(Servo.class, "ramp");
+//        leftIntakeRotate = hardwareMap.get(Servo.class, "left_Intake_Rotater");
+//        rightIntakeRotate = hardwareMap.get(Servo.class, "right_Intake_Rotater");
+//        Flicker = hardwareMap.get(Servo.class,"Flicker");
 
 
 
@@ -185,8 +179,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
         //Arm
-        rightIntake.setDirection(DcMotor.Direction.FORWARD);
-        leftIntake.setDirection(DcMotor.Direction.FORWARD);
+//        rightIntake.setDirection(DcMotor.Direction.FORWARD);
+//        leftIntake.setDirection(DcMotor.Direction.FORWARD);
 
 
 
@@ -199,8 +193,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rightIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        rightIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        leftIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         /*This sets the maximum current that the control hub will apply to the arm before throwing a flag */
 //        ((DcMotorEx) armMotor).setCurrentAlert(5,CurrentUnit.AMPS);
@@ -209,8 +203,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
 
 
         /* Send telemetry message to signify robot waiting */
-        telemetry.addLine("Robot Ready.");
-        telemetry.update();
+//        telemetry.addLine("Robot Ready.");
+//        telemetry.update();
 
 
         /* Wait for the game driver to press play */
@@ -260,11 +254,11 @@ public class NedBotTeleOp2 extends LinearOpMode {
                 rightFrontDrive.setPower(right);
                 rightBackDrive.setPower(right);
             }
-            boolean ToggledA2 = toggleA2.update();
-            boolean ToggledX2 = toggleX2.update();
-            boolean Toggledb2 = toggleb2.update();
+//            boolean ToggledA2 = toggleA2.update();
+//            boolean ToggledX2 = toggleX2.update();
+//            boolean Toggledb2 = toggleb2.update();
             boolean ToggledY1 = toggleY1.update();
-            boolean Toggledy2 = toggley2.update();
+//            boolean Toggledy2 = toggley2.update();
 
 
             if (ToggledY1) {
@@ -280,67 +274,66 @@ public class NedBotTeleOp2 extends LinearOpMode {
             }
 
 
-
 //                     controller 2
 
-            switch (intakeState) {
-                case OFF:
-                    if (ToggledA2) {
-                        rightIntake.setPower(0);
-                        leftIntake.setPower(0);
-                        flyWheel.setPower(0);
-                        leftIntakeRotate.setPosition(0.5);
-                        rightIntakeRotate.setPosition(0.5);
-                        ramp.setPosition(0);
-                        Roller.setPower(0);
-                        Roller2.setPower(0);
-                    }
-                case INTAKE:
-                    if (Toggledb2) {
-                        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-                        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-                        flyWheel.setPower(1);
-                        rightIntake.setPower(0.2);
-                        leftIntake.setPower(0.2);
-                        leftIntakeRotate.setPosition(0.5);
-                        rightIntakeRotate.setPosition(0.5);
-                        ramp.setPosition(0.2);
-                        Flicker.setPosition(3);
-                        Roller.setPower(1);
-                        Roller2.setPower(-1);
-
-                    }
-                case DEPOSIT:
-                    if (ToggledX2) {
-                        rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        rightIntake.setPower(0.9);
-                        leftIntake.setPower(0.9);
-                        Roller.setPower(-1);
-                        Roller2.setPower(1);
-                        leftIntakeRotate.setPosition(0.3);
-                        rightIntakeRotate.setPosition(0.7);
-                        ramp.setPosition(16);
-                        sleep(900);
-                        flyWheel.setPower(-1);
-                        Flicker.setPosition(-3);
-                    }
-                case INTAKE2:
-                    if (Toggledy2){
-                        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-                        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-                        Roller.setPower(-1);
-                        Roller2.setPower(1);
-                        leftIntakeRotate.setPosition(0.5);
-                        rightIntakeRotate.setPosition(0.5);
-                        flyWheel.setPower(1.5);
-                        rightIntake.setPower(0.2);
-                        leftIntake.setPower(0.2);
-                        ramp.setPosition(0);
-                        Flicker.setPosition(3);
-                    }
-
-            }
+//            switch (intakeState) {
+//                case OFF:
+//                    if (ToggledA2) {
+//                        rightIntake.setPower(0);
+//                        leftIntake.setPower(0);
+//                        flyWheel.setPower(0);
+//                        leftIntakeRotate.setPosition(0.5);
+//                        rightIntakeRotate.setPosition(0.5);
+//                        ramp.setPosition(0);
+//                        Roller.setPower(0);
+//                        Roller2.setPower(0);
+//                    }
+//                case INTAKE:
+//                    if (Toggledb2) {
+//                        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+//                        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+//                        flyWheel.setPower(1);
+//                        rightIntake.setPower(0.2);
+//                        leftIntake.setPower(0.2);
+//                        leftIntakeRotate.setPosition(0.5);
+//                        rightIntakeRotate.setPosition(0.5);
+//                        ramp.setPosition(0.2);
+//                        Flicker.setPosition(3);
+//                        Roller.setPower(1);
+//                        Roller2.setPower(-1);
+//
+//                    }
+//                case DEPOSIT:
+//                    if (ToggledX2) {
+//                        rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+//                        leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+//                        rightIntake.setPower(0.8);
+//                        leftIntake.setPower(0.8);
+//                        Roller.setPower(-1);
+//                        Roller2.setPower(1);
+//                        leftIntakeRotate.setPosition(0.3);
+//                        rightIntakeRotate.setPosition(0.7);
+//                        ramp.setPosition(15);
+//                        sleep(500);
+//                        flyWheel.setPower(-1);
+//                        Flicker.setPosition(-3);
+//                    }
+//                case INTAKE2:
+//                    if (Toggledy2){
+//                        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+//                        leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
+//                        Roller.setPower(-1);
+//                        Roller2.setPower(1);
+//                        leftIntakeRotate.setPosition(0.5);
+//                        rightIntakeRotate.setPosition(0.5);
+//                        flyWheel.setPower(1.5);
+//                        rightIntake.setPower(0.2);
+//                        leftIntake.setPower(0.2);
+//                        ramp.setPosition(0);
+//                        Flicker.setPosition(3);
+//                    }
+//
+//            }
 
 
 

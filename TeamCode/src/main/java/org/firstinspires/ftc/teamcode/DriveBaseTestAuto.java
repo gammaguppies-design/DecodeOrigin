@@ -30,14 +30,14 @@ public class DriveBaseTestAuto extends XDriveAuto {
             super.setBot(bot);
 
             waitForStart();
+            MotionProfile Fast = new MotionProfile(20, 30, 10);
 
+            bot.setspose(60, 60, 90);
 
-            MotionProfile slow = new MotionProfile(10, 20, 10);
+            driveTo(Fast, 50, 40, -90, 1);
 
-            bot.setspose(48, 60, -90);
-
-            driveTo(slow, 36, 54, 90, 1);
-            turnTo(90, 10, 5, 1);
+//            sleep(1000);
+//            turnTo(90, 10, 5, 1);
 
         }
 
