@@ -26,9 +26,7 @@ public class XDrive{
     double headingOffsetRadians = 0;
 
 
-    private int ticksBL = 0, ticksFL = 0, ticksFR = 0, ticksBR = 0;
-    private Pose pose = new Pose(0, 0, 0);
-    private Pose velocity = new Pose(0, 0, 0);
+
 
     public Localizer localizer;
     public OtosLocalizer otosLoc;
@@ -37,15 +35,15 @@ public class XDrive{
         headingOffsetRadians = AngleUnit.normalizeRadians(headingRadians - rawHeading);
     }
 
-    public void setspose(double x, double y, double hDegrees) {
-        double hRadians = Math.toRadians(hDegrees);
-        setHeadingRadians(hRadians);
-        ticksBL = bl.getCurrentPosition();
-        ticksFL = fl.getCurrentPosition();
-        ticksFR = fr.getCurrentPosition();
-        ticksBR = br.getCurrentPosition();
-        pose = new Pose(x, y, hRadians);
-    }
+//    public void setspose(double x, double y, double hDegrees) {
+//        double hRadians = Math.toRadians(hDegrees);
+//        setHeadingRadians(hRadians);
+//        ticksBL = bl.getCurrentPosition();
+//        ticksFL = fl.getCurrentPosition();
+//        ticksFR = fr.getCurrentPosition();
+//        ticksBR = br.getCurrentPosition();
+//        pose = new Pose(x, y, hRadians);
+//    }
     public void init(HardwareMap hwMap){
 
         List<LynxModule> allHubs = hwMap.getAll(LynxModule.class);

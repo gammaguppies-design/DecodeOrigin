@@ -32,9 +32,9 @@ public class DriveBaseTestAuto extends XDriveAuto {
             waitForStart();
             MotionProfile Fast = new MotionProfile(20, 30, 10);
 
-            bot.setspose(60, 60, 90);
+            
 
-            driveTo(Fast, 50, 40, -90, 1);
+            driveTo(Fast, 50, 40, 90, 1);
 
 //            sleep(1000);
 //            turnTo(90, 10, 5, 1);

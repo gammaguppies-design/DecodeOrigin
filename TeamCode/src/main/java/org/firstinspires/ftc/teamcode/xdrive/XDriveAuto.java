@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Predicate;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.deep.DeepBot;
+import org.firstinspires.ftc.teamcode.util.Localizer;
 import org.firstinspires.ftc.teamcode.util.MotionProfile;
 import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.util.QuinticSpline2D;
@@ -25,33 +26,36 @@ public abstract class XDriveAuto extends LinearOpMode {
     protected MotionProfile fast = new MotionProfile(25, 60, 25);
     protected MotionProfile superFast = new MotionProfile(30, 60, 30);
 
-    public void setBot(XDrive bot){
+
+    public Localizer localizer;
+    public void setBot(XDrive bot) {
         this.bot = bot;
     }
 
-    public void addPoseToTelemetry(String caption, Pose pose){
+
+    public void addPoseToTelemetry(String caption, Pose pose) {
         telemetry.addData(caption, "x = %.1f  y = %.1f  h = %.1f",
                 pose.x, pose.y, Math.toDegrees(pose.h));
     }
 
     public void driveTo(MotionProfile mProfile, double targetX, double targetY,
-                        double targetHeadingDegrees, double tolerance){
+                        double targetHeadingDegrees, double tolerance) {
         double targetHeadingRadians = Math.toRadians(targetHeadingDegrees);
         Pose startPose = bot.getPose();
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
-            VectorF fromStart = new VectorF((float)(pose.x - startPose.x), (float)(pose.y - startPose.y));
-            VectorF toTarget = new VectorF((float)(targetX - pose.x), (float)(targetY - pose.y));
+            VectorF fromStart = new VectorF((float) (pose.x - startPose.x), (float) (pose.y - startPose.y));
+            VectorF toTarget = new VectorF((float) (targetX - pose.x), (float) (targetY - pose.y));
             double d1 = fromStart.magnitude();
             double d2 = toTarget.magnitude();
 
-            if (d2 < tolerance){
+            if (d2 < tolerance) {
                 break;
             }
 
-            VectorF dir = toTarget.multiplied(1.0f/(float)d2);
+            VectorF dir = toTarget.multiplied(1.0f / (float) d2);
 
             double v1 = Math.sqrt(mProfile.vMin * mProfile.vMin + 2.0 * mProfile.accel * d1);
             double v2 = Math.sqrt(mProfile.vMin * mProfile.vMin + 2.0 * mProfile.accel * d2);
@@ -76,117 +80,117 @@ public abstract class XDriveAuto extends LinearOpMode {
     }
 
 
-    public void driveLine(MotionProfile mProf, Pose p0, Pose p1, double tolerance){
-        VectorF lineDir = new VectorF((float)(p1.x-p0.x), (float)(p1.y-p0.y));
+    public void driveLine(MotionProfile mProf, Pose p0, Pose p1, double tolerance) {
+        VectorF lineDir = new VectorF((float) (p1.x - p0.x), (float) (p1.y - p0.y));
         float totalDist = lineDir.magnitude();
-        lineDir = lineDir.multiplied(1.0f/totalDist);
+        lineDir = lineDir.multiplied(1.0f / totalDist);
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
 
-            if (Math.sqrt( (p1.x-pose.x)*(p1.x-pose.x) + (p1.y-pose.y)*(p1.y-pose.y)) < tolerance){
+            if (Math.sqrt((p1.x - pose.x) * (p1.x - pose.x) + (p1.y - pose.y) * (p1.y - pose.y)) < tolerance) {
                 break;
             }
 
-            VectorF vPose0 = new VectorF((float)(pose.x-p0.x), (float)(pose.y-p0.y));
+            VectorF vPose0 = new VectorF((float) (pose.x - p0.x), (float) (pose.y - p0.y));
             float d0 = vPose0.dotProduct(lineDir);  // how far we've gone
-            VectorF vPose1 = new VectorF((float)(p1.x-pose.x), (float)(p1.y-pose.y));
+            VectorF vPose1 = new VectorF((float) (p1.x - pose.x), (float) (p1.y - pose.y));
             float d1 = vPose1.dotProduct(lineDir);  // how far we have to go
-            float err = lineDir.get(0)*vPose0.get(1) - lineDir.get(1)*vPose0.get(0); // distance from pose to line
-            VectorF vErr = new VectorF(-err*lineDir.get(1), err*lineDir.get(0));    // Linear error vector
-            float speed0 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d0)*mProf.accel);
-            float speed1 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d1)*mProf.accel);
-            float speed = (float)Math.min(mProf.vMax, Math.min(speed0, speed1));
-            VectorF baseVel = lineDir.multiplied(speed*Math.signum(d1));
+            float err = lineDir.get(0) * vPose0.get(1) - lineDir.get(1) * vPose0.get(0); // distance from pose to line
+            VectorF vErr = new VectorF(-err * lineDir.get(1), err * lineDir.get(0));    // Linear error vector
+            float speed0 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d0) * mProf.accel);
+            float speed1 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d1) * mProf.accel);
+            float speed = (float) Math.min(mProf.vMax, Math.min(speed0, speed1));
+            VectorF baseVel = lineDir.multiplied(speed * Math.signum(d1));
             VectorF corrVel = vErr.multiplied(-0.2f * speed);
             VectorF velRobot = fieldToBot(baseVel.added(corrVel), pose.h);
-            double va = 4.0 * AngleUnit.normalizeRadians(p1.h-pose.h);
+            double va = 4.0 * AngleUnit.normalizeRadians(p1.h - pose.h);
             bot.setDriveSpeed(velRobot.get(0), velRobot.get(1), va);
         }
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
         bot.updateOdometry();
     }
 
 
-    public void driveLine(MotionProfile mProf, VectorF p0, VectorF p1, double targetHeadingDegrees, double tolerance){
+    public void driveLine(MotionProfile mProf, VectorF p0, VectorF p1, double targetHeadingDegrees, double tolerance) {
         VectorF lineDir = p1.subtracted(p0);
         float totalDist = lineDir.magnitude();
-        lineDir = lineDir.multiplied(1.0f/totalDist);
+        lineDir = lineDir.multiplied(1.0f / totalDist);
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
 
-            if (Math.sqrt( (p1.get(0)-pose.x)*(p1.get(0)-pose.x) + (p1.get(1)-pose.y)*(p1.get(1)-pose.y)) < tolerance){
+            if (Math.sqrt((p1.get(0) - pose.x) * (p1.get(0) - pose.x) + (p1.get(1) - pose.y) * (p1.get(1) - pose.y)) < tolerance) {
                 break;
             }
 
-            VectorF vPose0 = new VectorF((float)(pose.x-p0.get(0)), (float)(pose.y-p0.get(1)));
+            VectorF vPose0 = new VectorF((float) (pose.x - p0.get(0)), (float) (pose.y - p0.get(1)));
             float d0 = vPose0.dotProduct(lineDir);  // how far we've gone
-            VectorF vPose1 = new VectorF((float)(p1.get(0)-pose.x), (float)(p1.get(1)-pose.y));
+            VectorF vPose1 = new VectorF((float) (p1.get(0) - pose.x), (float) (p1.get(1) - pose.y));
             float d1 = vPose1.dotProduct(lineDir);  // how far we have to go
-            float err = lineDir.get(0)*vPose0.get(1) - lineDir.get(1)*vPose0.get(0); // distance from pose to line
-            VectorF vErr = new VectorF(-err*lineDir.get(1), err*lineDir.get(0));    // Linear error vector
-            float speed0 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d0)*mProf.accel);
-            float speed1 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d1)*mProf.accel);
-            float speed = (float)Math.min(mProf.vMax, Math.min(speed0, speed1));
-            VectorF baseVel = lineDir.multiplied(speed*Math.signum(d1));
+            float err = lineDir.get(0) * vPose0.get(1) - lineDir.get(1) * vPose0.get(0); // distance from pose to line
+            VectorF vErr = new VectorF(-err * lineDir.get(1), err * lineDir.get(0));    // Linear error vector
+            float speed0 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d0) * mProf.accel);
+            float speed1 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d1) * mProf.accel);
+            float speed = (float) Math.min(mProf.vMax, Math.min(speed0, speed1));
+            VectorF baseVel = lineDir.multiplied(speed * Math.signum(d1));
             VectorF corrVel = vErr.multiplied(-0.2f * speed);
             VectorF velRobot = fieldToBot(baseVel.added(corrVel), pose.h);
-            double va = 4.0 * AngleUnit.normalizeRadians(Math.toRadians(targetHeadingDegrees)-pose.h);
+            double va = 4.0 * AngleUnit.normalizeRadians(Math.toRadians(targetHeadingDegrees) - pose.h);
             bot.setDriveSpeed(velRobot.get(0), velRobot.get(1), va);
         }
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
         bot.updateOdometry();
     }
 
     public void driveLine(MotionProfile mProf, Pose p0, Pose p1, double tolerance,
-                          Runnable runnable){
-        VectorF lineDir = new VectorF((float)(p1.x-p0.x), (float)(p1.y-p0.y));
+                          Runnable runnable) {
+        VectorF lineDir = new VectorF((float) (p1.x - p0.x), (float) (p1.y - p0.y));
         float totalDist = lineDir.magnitude();
-        lineDir = lineDir.multiplied(1.0f/totalDist);
+        lineDir = lineDir.multiplied(1.0f / totalDist);
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
             runnable.run();
 
-            if (Math.sqrt( (p1.x-pose.x)*(p1.x-pose.x) + (p1.y-pose.y)*(p1.y-pose.y)) < tolerance){
+            if (Math.sqrt((p1.x - pose.x) * (p1.x - pose.x) + (p1.y - pose.y) * (p1.y - pose.y)) < tolerance) {
                 break;
             }
 
-            VectorF vPose0 = new VectorF((float)(pose.x-p0.x), (float)(pose.y-p0.y));
+            VectorF vPose0 = new VectorF((float) (pose.x - p0.x), (float) (pose.y - p0.y));
             float d0 = vPose0.dotProduct(lineDir);  // how far we've gone
-            VectorF vPose1 = new VectorF((float)(p1.x-pose.x), (float)(p1.y-pose.y));
+            VectorF vPose1 = new VectorF((float) (p1.x - pose.x), (float) (p1.y - pose.y));
             float d1 = vPose1.dotProduct(lineDir);  // how far we have to go
-            float err = lineDir.get(0)*vPose0.get(1) - lineDir.get(1)*vPose0.get(0); // distance from pose to line
-            VectorF vErr = new VectorF(-err*lineDir.get(1), err*lineDir.get(0));    // Linear error vector
-            float speed0 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d0)*mProf.accel);
-            float speed1 = (float)Math.sqrt(mProf.vMin*mProf.vMin + 2.0*Math.abs(d1)*mProf.accel);
-            float speed = (float)Math.min(mProf.vMax, Math.min(speed0, speed1));
-            VectorF baseVel = lineDir.multiplied(speed*Math.signum(d1));
+            float err = lineDir.get(0) * vPose0.get(1) - lineDir.get(1) * vPose0.get(0); // distance from pose to line
+            VectorF vErr = new VectorF(-err * lineDir.get(1), err * lineDir.get(0));    // Linear error vector
+            float speed0 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d0) * mProf.accel);
+            float speed1 = (float) Math.sqrt(mProf.vMin * mProf.vMin + 2.0 * Math.abs(d1) * mProf.accel);
+            float speed = (float) Math.min(mProf.vMax, Math.min(speed0, speed1));
+            VectorF baseVel = lineDir.multiplied(speed * Math.signum(d1));
             VectorF corrVel = vErr.multiplied(-0.2f * speed);
             VectorF velRobot = fieldToBot(baseVel.added(corrVel), pose.h);
-            double va = 4.0 * AngleUnit.normalizeRadians(p1.h-pose.h);
+            double va = 4.0 * AngleUnit.normalizeRadians(p1.h - pose.h);
             bot.setDriveSpeed(velRobot.get(0), velRobot.get(1), va);
         }
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
         bot.updateOdometry();
     }
 
     public void jogTo(MotionProfile mProf, double targetX, double targetY, double targetHeadingDegrees,
-                      double tolerance, boolean rightFirst){
+                      double tolerance, boolean rightFirst) {
         Pose pose = bot.getPose();
-        VectorF yr = new VectorF((float)Math.cos(pose.h),(float)Math.sin(pose.h));
-        VectorF xr = new VectorF((float)Math.sin(pose.h),-(float)Math.cos(pose.h));
-        VectorF ur = xr.added(yr).multiplied(1.0f/(float)Math.sqrt(2));
-        VectorF vr = yr.subtracted(xr).multiplied(1.0f/(float)Math.sqrt(2));
-        VectorF start = new VectorF((float) pose.x,(float) pose.y);
-        VectorF target = new VectorF((float)targetX, (float)targetY);
+        VectorF yr = new VectorF((float) Math.cos(pose.h), (float) Math.sin(pose.h));
+        VectorF xr = new VectorF((float) Math.sin(pose.h), -(float) Math.cos(pose.h));
+        VectorF ur = xr.added(yr).multiplied(1.0f / (float) Math.sqrt(2));
+        VectorF vr = yr.subtracted(xr).multiplied(1.0f / (float) Math.sqrt(2));
+        VectorF start = new VectorF((float) pose.x, (float) pose.y);
+        VectorF target = new VectorF((float) targetX, (float) targetY);
         VectorF diff = target.subtracted(start);
         VectorF pIntermed;
-        if (rightFirst){
+        if (rightFirst) {
             pIntermed = start.added(ur.multiplied(diff.dotProduct(ur)));
         } else {
             pIntermed = start.added(vr.multiplied(diff.dotProduct(vr)));
@@ -195,23 +199,23 @@ public abstract class XDriveAuto extends LinearOpMode {
         driveTo(mProf, targetX, targetY, targetHeadingDegrees, tolerance);
     }
 
-    public void turnTo(double targetHeadingDegrees, double vaMaxDegrees, double coeff, double toleranceDegrees){
+    public void turnTo(double targetHeadingDegrees, double vaMaxDegrees, double coeff, double toleranceDegrees) {
         double targetHeadingRadians = Math.toRadians(targetHeadingDegrees);
         double vaMaxRadians = Math.toRadians(vaMaxDegrees);
         double toleranceRadians = Math.toRadians(toleranceDegrees);
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
             Pose velocity = bot.getVelocity();
             double offset = AngleUnit.normalizeRadians(targetHeadingRadians - pose.h);
 
-            if (Math.abs(offset) < toleranceRadians && Math.abs(velocity.h) < 0.5){
+            if (Math.abs(offset) < toleranceRadians && Math.abs(velocity.h) < 0.5) {
                 break;
             }
 
             double va = coeff * offset;
-            if (Math.abs(va) > vaMaxRadians){
+            if (Math.abs(va) > vaMaxRadians) {
                 va = vaMaxRadians * Math.signum(va);
             }
 
@@ -223,29 +227,29 @@ public abstract class XDriveAuto extends LinearOpMode {
 
 
     public void turnTo(double targetHeadingDegrees, double vaMaxDegrees, double coeff,
-                       boolean clockwise, double toleranceDegrees){
+                       boolean clockwise, double toleranceDegrees) {
         double targetHeadingRadians = Math.toRadians(targetHeadingDegrees);
         double vaMaxRadians = Math.toRadians(vaMaxDegrees);
         double toleranceRadians = Math.toRadians(toleranceDegrees);
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
             Pose pose = bot.getPose();
             Pose velocity = bot.getVelocity();
             double offset = AngleUnit.normalizeRadians(targetHeadingRadians - pose.h);
 
-            if (Math.abs(offset) < toleranceRadians && Math.abs(velocity.h) < 0.5){
+            if (Math.abs(offset) < toleranceRadians && Math.abs(velocity.h) < 0.5) {
                 break;
             }
 
-            if (clockwise && offset>0.5){
-                offset -= 2*Math.PI;
-            } else if (!clockwise && offset<-0.5){
-                offset += 2*Math.PI;
+            if (clockwise && offset > 0.5) {
+                offset -= 2 * Math.PI;
+            } else if (!clockwise && offset < -0.5) {
+                offset += 2 * Math.PI;
             }
 
             double va = coeff * offset;
-            if (Math.abs(va) > vaMaxRadians){
+            if (Math.abs(va) > vaMaxRadians) {
                 va = vaMaxRadians * Math.signum(va);
             }
 
@@ -258,22 +262,23 @@ public abstract class XDriveAuto extends LinearOpMode {
 
     /**
      * Drive quintic spline from current position and heading to target position and heading.
-     * @param mProf     Min and max speed, acceleration
-     * @param endX      target X coordinate
-     * @param endY      target Y coordinate
-     * @param endHeadingDegrees     Target final TRAVEL DIRECTION
-     * @param tolerance             target final coordinate tolerance, inches
-     * @param reverse               If true, drive in reverse
+     *
+     * @param mProf             Min and max speed, acceleration
+     * @param endX              target X coordinate
+     * @param endY              target Y coordinate
+     * @param endHeadingDegrees Target final TRAVEL DIRECTION
+     * @param tolerance         target final coordinate tolerance, inches
+     * @param reverse           If true, drive in reverse
      */
     public void splineTo(MotionProfile mProf, double endX, double endY,
-                         double endHeadingDegrees, double tolerance, boolean reverse){
+                         double endHeadingDegrees, double tolerance, boolean reverse) {
         bot.updateOdometry();
         double startHeadingRadians = bot.getPose().h;
-        if (reverse){
+        if (reverse) {
             startHeadingRadians = AngleUnit.normalizeRadians(startHeadingRadians + Math.PI);
         }
         double endHeadingRadians = Math.toRadians(endHeadingDegrees);
-        VectorF endVec = new VectorF((float)endX, (float)endY);
+        VectorF endVec = new VectorF((float) endX, (float) endY);
         QuinticSpline2D spline = new QuinticSpline2D(bot.getPose().x, bot.getPose().y,
                 endX, endY, startHeadingRadians, endHeadingRadians);
         double totalLength = spline.getLength();
@@ -286,9 +291,9 @@ public abstract class XDriveAuto extends LinearOpMode {
         VectorF velRobot;
         double va = 0;
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
-            VectorF poseVec = new VectorF((float)bot.getPose().x, (float)bot.getPose().y);
+            VectorF poseVec = new VectorF((float) bot.getPose().x, (float) bot.getPose().y);
 
             // Find closest point on spline to current pose
             s = spline.findClosestS(poseVec.get(0), poseVec.get(1), s);
@@ -314,7 +319,7 @@ public abstract class XDriveAuto extends LinearOpMode {
 
             // travelDir is unit vector giving current direction of travel along spline
             VectorF travelDir = spline.d1(s);
-            travelDir = travelDir.multiplied(1.0f/travelDir.magnitude());
+            travelDir = travelDir.multiplied(1.0f / travelDir.magnitude());
 
             // Compute nominal travel speed, v
             double v0 = Math.sqrt(mProf.vMin * mProf.vMin + 2 * mProf.accel * d0);
@@ -323,7 +328,7 @@ public abstract class XDriveAuto extends LinearOpMode {
             v = Math.min(v, mProf.vMax);
 
             // Compute travel velocity, including nominal velocity plus correction
-            vel = travelDir.multiplied((float)v).added(targErr.multiplied(8.0f));
+            vel = travelDir.multiplied((float) v).added(targErr.multiplied(8.0f));
 
             // Convert vel from field coordinates to robot coordinates
             velRobot = fieldToBot(vel, bot.getPose().h);
@@ -359,41 +364,43 @@ public abstract class XDriveAuto extends LinearOpMode {
             targetHeading = AngleUnit.normalizeRadians(targetHeading + Math.PI);
         }
 
-        while (opModeIsActive() && et.seconds() < 1){
+        while (opModeIsActive() && et.seconds() < 1) {
             bot.updateOdometry();
-            VectorF vecToEnd = endVec.subtracted(new VectorF((float)bot.getPose().x, (float)bot.getPose().y));
+            VectorF vecToEnd = endVec.subtracted(new VectorF((float) bot.getPose().x, (float) bot.getPose().y));
             headingError = AngleUnit.normalizeRadians(targetHeading - bot.getPose().h);
-            if (vecToEnd.magnitude() < tolerance && Math.abs(headingError) < Math.toRadians(3)) break;
+            if (vecToEnd.magnitude() < tolerance && Math.abs(headingError) < Math.toRadians(3))
+                break;
             vel = vecToEnd.multiplied(8);
             velRobot = fieldToBot(vel, bot.getPose().h);
             va = 4.0 * headingError;
             bot.setDriveSpeed(velRobot.get(0), velRobot.get(1), va);
         }
 
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
     }
 
 
     /**
      * Drive quintic spline from current position and heading to target position and heading.
-     * @param mProf     Min and max speed, acceleration
-     * @param endX      target X coordinate
-     * @param endY      target Y coordinate
-     * @param endHeadingDegrees     Target final TRAVEL DIRECTION
-     * @param tolerance             target final coordinate tolerance, inches
-     * @param reverse               If true, drive in reverse
-     * @param alpha     Higher alpha -> less turning at the beginning, more at the middle of path
-     * @param beta      Higher beta -> less turning at the end, more at the middle of path
+     *
+     * @param mProf             Min and max speed, acceleration
+     * @param endX              target X coordinate
+     * @param endY              target Y coordinate
+     * @param endHeadingDegrees Target final TRAVEL DIRECTION
+     * @param tolerance         target final coordinate tolerance, inches
+     * @param reverse           If true, drive in reverse
+     * @param alpha             Higher alpha -> less turning at the beginning, more at the middle of path
+     * @param beta              Higher beta -> less turning at the end, more at the middle of path
      */
     public void splineTo(MotionProfile mProf, double endX, double endY, double endHeadingDegrees,
-                         double tolerance, boolean reverse, double alpha, double beta){
+                         double tolerance, boolean reverse, double alpha, double beta) {
         bot.updateOdometry();
         double startHeadingRadians = bot.getPose().h;
-        if (reverse){
+        if (reverse) {
             startHeadingRadians = AngleUnit.normalizeRadians(startHeadingRadians + Math.PI);
         }
         double endHeadingRadians = Math.toRadians(endHeadingDegrees);
-        VectorF endVec = new VectorF((float)endX, (float)endY);
+        VectorF endVec = new VectorF((float) endX, (float) endY);
         QuinticSpline2D spline = new QuinticSpline2D(bot.getPose().x, bot.getPose().y,
                 endX, endY, startHeadingRadians, endHeadingRadians, alpha, beta);
         double totalLength = spline.getLength();
@@ -406,9 +413,9 @@ public abstract class XDriveAuto extends LinearOpMode {
         VectorF velRobot;
         double va = 0;
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
-            VectorF poseVec = new VectorF((float)bot.getPose().x, (float)bot.getPose().y);
+            VectorF poseVec = new VectorF((float) bot.getPose().x, (float) bot.getPose().y);
 
             // Find closest point on spline to current pose
             s = spline.findClosestS(poseVec.get(0), poseVec.get(1), s);
@@ -434,7 +441,7 @@ public abstract class XDriveAuto extends LinearOpMode {
 
             // travelDir is unit vector giving current direction of travel along spline
             VectorF travelDir = spline.d1(s);
-            travelDir = travelDir.multiplied(1.0f/travelDir.magnitude());
+            travelDir = travelDir.multiplied(1.0f / travelDir.magnitude());
 
             // Compute nominal travel speed, v
             double v0 = Math.sqrt(mProf.vMin * mProf.vMin + 2 * mProf.accel * d0);
@@ -443,7 +450,7 @@ public abstract class XDriveAuto extends LinearOpMode {
             v = Math.min(v, mProf.vMax);
 
             // Compute travel velocity, including nominal velocity plus correction
-            vel = travelDir.multiplied((float)v).added(targErr.multiplied(8.0f));
+            vel = travelDir.multiplied((float) v).added(targErr.multiplied(8.0f));
 
             // Convert vel from field coordinates to robot coordinates
             velRobot = fieldToBot(vel, bot.getPose().h);
@@ -479,23 +486,24 @@ public abstract class XDriveAuto extends LinearOpMode {
             targetHeading = AngleUnit.normalizeRadians(targetHeading + Math.PI);
         }
 
-        while (opModeIsActive() && et.seconds() < 1){
+        while (opModeIsActive() && et.seconds() < 1) {
             bot.updateOdometry();
-            VectorF vecToEnd = endVec.subtracted(new VectorF((float)bot.getPose().x, (float)bot.getPose().y));
+            VectorF vecToEnd = endVec.subtracted(new VectorF((float) bot.getPose().x, (float) bot.getPose().y));
             headingError = AngleUnit.normalizeRadians(targetHeading - bot.getPose().h);
-            if (vecToEnd.magnitude() < tolerance && Math.abs(headingError) < Math.toRadians(3)) break;
+            if (vecToEnd.magnitude() < tolerance && Math.abs(headingError) < Math.toRadians(3))
+                break;
             vel = vecToEnd.multiplied(8);
             velRobot = fieldToBot(vel, bot.getPose().h);
             va = 4.0 * headingError;
             bot.setDriveSpeed(velRobot.get(0), velRobot.get(1), va);
         }
 
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
     }
 
 
-    public  void driveUntilStopped(double speed, double directionDegrees,
-                                   Predicate<Pose> pred){
+    public void driveUntilStopped(double speed, double directionDegrees,
+                                  Predicate<Pose> pred) {
         Pose pose = bot.getPose();
         double heading = pose.h;
         double directionRadians = Math.toRadians(directionDegrees);
@@ -509,47 +517,46 @@ public abstract class XDriveAuto extends LinearOpMode {
 
         bot.otosLoc.setPose(pose.x, pose.y, Math.toDegrees(pose.h));
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             bot.updateOdometry();
-            Pair<Double,Pose> progress = pc.check();
+            Pair<Double, Pose> progress = pc.check();
             if (et.milliseconds() > 500 && progress != null
-            && pred.test(progress.second)){
+                    && pred.test(progress.second)) {
                 break;
             }
         }
 
-        bot.setDriveSpeed(0,0,0);
+        bot.setDriveSpeed(0, 0, 0);
 
     }
 
-
-
-
+    public void SetsPose(double x, double y, double hDegrees){
+        localizer.setPose(x, y, hDegrees);
+    }
     protected VectorF fieldToBot(VectorF vField, double heading) {
         float sinTheta = (float) Math.sin(heading);
         float cosTheta = (float) Math.cos(heading);
         return new VectorF(vField.get(0) * sinTheta - vField.get(1) * cosTheta, vField.get(0) * cosTheta + vField.get(1) * sinTheta);
     }
 
-    protected VectorF botToField(VectorF vBot, double heading){
+    protected VectorF botToField(VectorF vBot, double heading) {
         float sinTheta = (float) Math.sin(heading);
         float cosTheta = (float) Math.cos(heading);
         return new VectorF(vBot.get(0) * sinTheta + vBot.get(1) * cosTheta, -vBot.get(0) * cosTheta + vBot.get(1) * sinTheta);
     }
 
 
-
     public class ProgressChecker {
         private LinkedList<Pair<Double, Pose>> queue = new LinkedList<>();
         private double interval;
 
-        public ProgressChecker(double millis){
+        public ProgressChecker(double millis) {
             interval = millis;
-            queue.add(new Pair<>(System.nanoTime()/1000000.0, bot.getPose()));
+            queue.add(new Pair<>(System.nanoTime() / 1000000.0, bot.getPose()));
         }
 
-        public Pair<Double,Pose> check(){
-            double currentMillis = System.nanoTime()/1000000.0;
+        public Pair<Double, Pose> check() {
+            double currentMillis = System.nanoTime() / 1000000.0;
             Pose currentPose = bot.otosLoc.getPose();
 
             Pair<Double, Pose> queuePeek = queue.peek();
@@ -564,8 +571,8 @@ public abstract class XDriveAuto extends LinearOpMode {
                 return null;
             }
             Pose queuePeekPose = queuePeek.second;
-            Pose progress = new Pose(currentPose.x-queuePeekPose.x, currentPose.y-queuePeekPose.y,
-                    currentPose.h-queuePeekPose.h);
+            Pose progress = new Pose(currentPose.x - queuePeekPose.x, currentPose.y - queuePeekPose.y,
+                    currentPose.h - queuePeekPose.h);
 
             while (elapsedMillis > interval) {
                 queue.remove();
@@ -576,15 +583,18 @@ public abstract class XDriveAuto extends LinearOpMode {
                 }
                 queuePeekMillis = queuePeek.first.doubleValue();
                 elapsedMillis = currentMillis - queuePeekMillis;
-                progress = new Pose(currentPose.x-queuePeekPose.x, currentPose.y-queuePeekPose.y,
-                        currentPose.h-queuePeekPose.h);
+                progress = new Pose(currentPose.x - queuePeekPose.x, currentPose.y - queuePeekPose.y,
+                        currentPose.h - queuePeekPose.h);
             }
 
-            queue.add(new Pair<Double,Pose>(currentMillis, currentPose));
-            return new Pair<Double,Pose>(elapsedMillis, progress);
+            queue.add(new Pair<Double, Pose>(currentMillis, currentPose));
+            return new Pair<Double, Pose>(elapsedMillis, progress);
+
+
         }
     }
-
-
-
 }
+
+
+
+
