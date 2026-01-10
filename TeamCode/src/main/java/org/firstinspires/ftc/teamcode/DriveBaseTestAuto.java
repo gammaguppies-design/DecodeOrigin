@@ -32,7 +32,7 @@ public class DriveBaseTestAuto extends XDriveAuto {
             waitForStart();
             MotionProfile Fast = new MotionProfile(20, 30, 10);
 
-            
+            bot.SetsPose()
 
             driveTo(Fast, 50, 40, 90, 1);
 
