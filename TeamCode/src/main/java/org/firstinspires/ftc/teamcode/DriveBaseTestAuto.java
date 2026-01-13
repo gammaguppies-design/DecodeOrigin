@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.xdrive.XDriveAuto;
 
 @Autonomous
 public class DriveBaseTestAuto extends XDriveAuto {
-//    protected XDrive bot;
 
 
     XDrive bot = new XDrive();
+    
 
     public void setBot(XDrive bot){
         this.bot = bot;
@@ -32,7 +32,7 @@ public class DriveBaseTestAuto extends XDriveAuto {
             waitForStart();
             MotionProfile Fast = new MotionProfile(20, 30, 10);
 
-            bot.SetsPose()
+
 
             driveTo(Fast, 50, 40, 90, 1);
 
