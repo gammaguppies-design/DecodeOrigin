@@ -16,7 +16,9 @@ import org.firstinspires.ftc.teamcode.xdrive.XDriveAuto;
 @Autonomous
 public class DriveBaseTestAuto extends XDriveAuto {
 
-
+    public void SetsPose(double x, double y, double hDegrees){
+        localizer.setPose(x, y, hDegrees);
+    }
     XDrive bot = new XDrive();
 
 
@@ -31,6 +33,9 @@ public class DriveBaseTestAuto extends XDriveAuto {
 
             waitForStart();
             MotionProfile Fast = new MotionProfile(20, 30, 10);
+
+
+            
 
 
             driveTo(Fast, 50, 40, 90, 1);
