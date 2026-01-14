@@ -18,7 +18,7 @@ public class DriveBaseTestAuto extends XDriveAuto {
 
 
     XDrive bot = new XDrive();
-    
+
 
     public void setBot(XDrive bot){
         this.bot = bot;
@@ -33,11 +33,9 @@ public class DriveBaseTestAuto extends XDriveAuto {
             MotionProfile Fast = new MotionProfile(20, 30, 10);
 
 
-
             driveTo(Fast, 50, 40, 90, 1);
 
-//            sleep(1000);
-//            turnTo(90, 10, 5, 1);
+
 
         }
 

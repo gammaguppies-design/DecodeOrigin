@@ -156,6 +156,9 @@ public class NedBotTeleOp2 extends LinearOpMode {
         double max;
 
 
+
+
+
       // drive motors
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFrontDrive"); //the left front drive motor
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBackDrive");//the left back Dive motor
@@ -179,8 +182,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
 
 
 
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+       leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
 
@@ -216,8 +219,10 @@ public class NedBotTeleOp2 extends LinearOpMode {
         /* Wait for the game driver to press play */
         waitForStart();
 
+
         /* Run until the driver presses stop */
         while (opModeIsActive()) {
+
 
             /* Set the drive and turn variables to follow the joysticks on the gamepad.
             the joysticks decrease as you push them up. So reverse the Y axis. */
@@ -243,10 +248,10 @@ public class NedBotTeleOp2 extends LinearOpMode {
             }
 
             /* Set the motor power to the variables we've mixed and normalized */
-//            leftFrontDrive.setPower(left);
-//            leftBackDrive.setPower(left);
-//            rightFrontDrive.setPower(right);
-//            rightBackDrive.setPower(right);
+            leftFrontDrive.setPower(left);
+            leftBackDrive.setPower(left);
+            rightFrontDrive.setPower(right);
+            rightBackDrive.setPower(right);
 
             if(yState == true) {
                 leftFrontDrive.setPower(left / 2);
@@ -346,4 +351,20 @@ public class NedBotTeleOp2 extends LinearOpMode {
 
         }
     }
+//    public void drive(double y, double x, double rx) {
+//        double frontLeftPower  = y + x + rx;
+//        double backLeftPower   = y - x + rx;
+//        double frontRightPower = y - x - rx;
+//        double backRightPower  = y + x - rx;
+//
+//        // Normalize power levels
+//        double max = Math.max(1.0, Math.max(Math.abs(frontLeftPower),
+//                Math.max(Math.abs(backLeftPower),
+//                        Math.max(Math.abs(frontRightPower), Math.abs(backRightPower)))));
+//
+//        leftFrontDrive.setPower(frontLeftPower / max);
+//        leftBackDrive.setPower(backLeftPower / max);
+//        rightBackDrive.setPower(frontRightPower / max);
+//        rightFrontDrive.setPower(backRightPower / max);
+//    }
 }

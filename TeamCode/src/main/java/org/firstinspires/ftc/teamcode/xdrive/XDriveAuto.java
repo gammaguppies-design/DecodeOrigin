@@ -79,6 +79,9 @@ public abstract class XDriveAuto extends LinearOpMode {
         bot.setDrivePower(0, 0, 0);
     }
 
+    public void SetsPose(double x, double y, double hDegrees){
+        localizer.setPose(x, y, hDegrees);
+    }
 
     public void driveLine(MotionProfile mProf, Pose p0, Pose p1, double tolerance) {
         VectorF lineDir = new VectorF((float) (p1.x - p0.x), (float) (p1.y - p0.y));
@@ -530,9 +533,6 @@ public abstract class XDriveAuto extends LinearOpMode {
 
     }
 
-    public void SetsPose(double x, double y, double hDegrees){
-        localizer.setPose(x, y, hDegrees);
-    }
     protected VectorF fieldToBot(VectorF vField, double heading) {
         float sinTheta = (float) Math.sin(heading);
         float cosTheta = (float) Math.cos(heading);
