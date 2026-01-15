@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.deep.DeepBot;
+import org.firstinspires.ftc.teamcode.util.Localizer;
 import org.firstinspires.ftc.teamcode.util.MotionProfile;
+import org.firstinspires.ftc.teamcode.util.Pose;
 import org.firstinspires.ftc.teamcode.xdrive.XDrive;
 import org.firstinspires.ftc.teamcode.xdrive.XDriveAuto;
 
@@ -16,10 +18,13 @@ import org.firstinspires.ftc.teamcode.xdrive.XDriveAuto;
 @Autonomous
 public class DriveBaseTestAuto extends XDriveAuto {
 
-    public void SetsPose(double x, double y, double hDegrees){
+    public void setPose(double x, double y, double hDegrees){
         localizer.setPose(x, y, hDegrees);
     }
     XDrive bot = new XDrive();
+
+    public Localizer localizer;
+    public IMU imu;
 
 
     public void setBot(XDrive bot){
@@ -34,13 +39,14 @@ public class DriveBaseTestAuto extends XDriveAuto {
             waitForStart();
             MotionProfile Fast = new MotionProfile(20, 30, 10);
 
+            Pose mypose = bot.getPose();
 
-            
+            bot.localizer.setPose(50, 60,90);
 
+            driveTo(Fast, 50, 48, 90, 1);
 
-            driveTo(Fast, 50, 40, 90, 1);
-
-
+            addPoseToTelemetry("pose", mypose);
+            telemetry.update();
 
         }
 

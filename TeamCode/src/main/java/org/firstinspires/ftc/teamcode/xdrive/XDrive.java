@@ -66,6 +66,7 @@ public class XDrive{
         // TODO: Set Direction to Reverse for the correct motors
         br.setDirection(DcMotorSimple.Direction.REVERSE);
         fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Reset all drive motor encoders (this also disables them)
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -83,7 +84,7 @@ public class XDrive{
 
          //TODO: Set RevHub orientation correctly for the real robot
         imu.initialize(new IMU.Parameters(
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)));
+                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)));
         ElapsedTime et = new ElapsedTime();
         while (et.milliseconds() < 150 && !Thread.currentThread().isInterrupted()) continue;
 
@@ -244,7 +245,6 @@ public class XDrive{
             ticksBR = br.getCurrentPosition();
             pose = new Pose(x, y, hRadians);
         }
-
 
 
         public Pose getVelocity(){
