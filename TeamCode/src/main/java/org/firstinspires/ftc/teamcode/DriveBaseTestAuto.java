@@ -43,7 +43,7 @@ public class DriveBaseTestAuto extends XDriveAuto {
 
             bot.localizer.setPose(50, 60,90);
 
-            driveTo(Fast, 50, 48, 90, 1);
+            driveTo(Fast, 20, 60, 90, 1);
 
             addPoseToTelemetry("pose", mypose);
             telemetry.update();

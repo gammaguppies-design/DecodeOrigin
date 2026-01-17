@@ -101,8 +101,10 @@ public class NedBotTeleOp2 extends LinearOpMode {
     Toggle toggleX2 = new Toggle(() -> gamepad2.x);
     Toggle toggleb2 = new Toggle(() -> gamepad2.b);
 
+    Toggle toggleRb2 = new Toggle(()->gamepad2.right_bumper);
+
     enum slowMode {Fast, Slow}
-    enum IntakeState {OFF, INTAKE, DEPOSIT, INTAKE2}
+    enum IntakeState {OFF, INTAKE,INTAKE2, DEPOSIT, DEPOSIT2}
 
     IntakeState intakeState = IntakeState.OFF;
 
@@ -270,6 +272,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
             boolean Toggledb2 = toggleb2.update();
             boolean ToggledY1 = toggleY1.update();
             boolean Toggledy2 = toggley2.update();
+            boolean ToggledRb2 = toggleRb2.update();
 
 
             if (ToggledY1) {
@@ -319,8 +322,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
                     if (ToggledX2) {
                         rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
                         leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        rightIntake.setPower(0.9);
-                        leftIntake.setPower(0.9);
+                        rightIntake.setPower(0.85);
+                        leftIntake.setPower(0.85);
                         Roller.setPower(-1);
                         Roller2.setPower(1);
                         leftIntakeRotate.setPosition(0.3);
@@ -344,6 +347,21 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         ramp.setPosition(0);
                         Flicker.setPosition(3);
                     }
+                    case DEPOSIT2:
+                        if (ToggledRb2){
+                            rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+                            leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+                            rightIntake.setPower(1);
+                            leftIntake.setPower(1);
+                            Roller.setPower(-1);
+                            Roller2.setPower(1);
+                            leftIntakeRotate.setPosition(0.3);
+                            rightIntakeRotate.setPosition(0.7);
+                            ramp.setPosition(16);
+//                            sleep(900);
+                            flyWheel.setPower(-1);
+                            Flicker.setPosition(-3);
+                        }
 
             }
 
