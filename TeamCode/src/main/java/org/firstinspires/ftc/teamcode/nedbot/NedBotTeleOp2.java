@@ -310,7 +310,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
                     if (Toggledb2) {
                         rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
                         leftIntake.setDirection(DcMotorSimple.Direction.REVERSE);
-                        flyWheel.setPower(1);
+                        flyWheel.setPower(0.8);
                         rightIntake.setPower(0.2);
                         leftIntake.setPower(0.2);
                         leftIntakeRotate.setPosition(0.5);
@@ -325,8 +325,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
                     if (ToggledX2) {
                         rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
                         leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        rightIntake.setVelocity(1500);
-                        leftIntake.setVelocity(1500);
+                        rightIntake.setVelocity(1200);
+                        leftIntake.setVelocity(1200);
                         Roller.setPower(-1);
                         Roller2.setPower(1);
                         leftIntakeRotate.setPosition(0.3);
