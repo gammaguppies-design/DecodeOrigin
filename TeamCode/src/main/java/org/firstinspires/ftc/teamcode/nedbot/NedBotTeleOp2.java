@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.util.Toggle;
 
@@ -79,8 +80,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
     public DcMotor rightBackDrive = null; //the right back drivetrain motor
 
     //Arm
-    public DcMotor rightIntake = null; //the right intake motor
-    public DcMotor leftIntake = null; //the left intake motor
+    public DcMotorEx rightIntake = null; //the right intake motor
+    public DcMotorEx leftIntake = null; //the left intake motor
 
 
   // intake smart servos
@@ -168,8 +169,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");//the right back drive motor
 
 //        intake motors
-        rightIntake = hardwareMap.get(DcMotor.class, "rightIntake");//the right intake motor
-        leftIntake = hardwareMap.get(DcMotor.class, "leftIntake");//the left intake motor
+        rightIntake = hardwareMap.get(DcMotorEx.class, "rightIntake");//the right intake motor
+        leftIntake = hardwareMap.get(DcMotorEx.class, "leftIntake");//the left intake motor
 
         // intake CRservos
         flyWheel = hardwareMap.get(CRServo.class, "flyWheel");
@@ -192,6 +193,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
         //Arm
         rightIntake.setDirection(DcMotor.Direction.FORWARD);
         leftIntake.setDirection(DcMotor.Direction.FORWARD);
+
+
 
 
 
@@ -299,7 +302,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         flyWheel.setPower(0);
                         leftIntakeRotate.setPosition(0.5);
                         rightIntakeRotate.setPosition(0.5);
-                        ramp.setPosition(0);
+                        ramp.setPosition(0.26);
                         Roller.setPower(0);
                         Roller2.setPower(0);
                     }
@@ -312,7 +315,7 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         leftIntake.setPower(0.2);
                         leftIntakeRotate.setPosition(0.5);
                         rightIntakeRotate.setPosition(0.5);
-                        ramp.setPosition(0.2);
+                        ramp.setPosition(0.3);
                         Flicker.setPosition(3);
                         Roller.setPower(1);
                         Roller2.setPower(-1);
@@ -322,8 +325,8 @@ public class NedBotTeleOp2 extends LinearOpMode {
                     if (ToggledX2) {
                         rightIntake.setDirection(DcMotorSimple.Direction.FORWARD);
                         leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-                        rightIntake.setPower(0.85);
-                        leftIntake.setPower(0.85);
+                        rightIntake.setVelocity(1500);
+                        leftIntake.setVelocity(1500);
                         Roller.setPower(-1);
                         Roller2.setPower(1);
                         leftIntakeRotate.setPosition(0.3);
@@ -344,8 +347,9 @@ public class NedBotTeleOp2 extends LinearOpMode {
                         flyWheel.setPower(1.5);
                         rightIntake.setPower(0.2);
                         leftIntake.setPower(0.2);
-                        ramp.setPosition(0);
+                        ramp.setPosition(0.10);
                         Flicker.setPosition(3);
+
                     }
                     case DEPOSIT2:
                         if (ToggledRb2){
