@@ -43,19 +43,19 @@ void setup() {
 
     huskylens.writeAlgorithm(ALGORITHM_OBJECT_TRACKING); //Switch the algorithm to object tracking.
 
-    // while (true)
-    // {Robot.Speed (200-50,200+50);
-    // delay(2000);
-    // Robot.Speed (0,0);
-    // delay(2000);
-    // Robot.Speed (200,200);
-    // delay(2000);
-    // Robot.Speed (0,0);
-    // delay(2000);
-    // Robot.Speed (200+50,200-50);
-    // delay(2000);
-    // Robot.Speed (0,0);
-    // delay(2000);}
+     while (true)
+     {Robot.Speed (200-50,200+50);
+     delay(2000);
+     Robot.Speed (0,0);
+     delay(2000);
+     Robot.Speed (200,200);
+     delay(2000);
+     Robot.Speed (0,0);
+     delay(2000);
+     Robot.Speed (200+50,200-50);
+     delay(2000);
+     Robot.Speed (0,0);
+     delay(2000);}
 
 }
 

@@ -58,16 +58,16 @@ DriveBaseV2 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontRight = null;
+//    private DcMotor frontRight = null;
     private DcMotor backRight = null;
-    private DcMotor frontLeft = null;
+//    private DcMotor frontLeft = null;
     private DcMotor backLeft = null;
 
-    public void setArmMotor(DcMotor armMotor) {
-        this.armMotor = armMotor;
-
-    }
-    private DcMotor armMotor = null;
+//    public void setArmMotor(DcMotor armMotor) {
+//        this.armMotor = armMotor;
+//
+//    }
+//    private DcMotor armMotor = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -80,9 +80,12 @@ DriveBaseV2 extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
 //        // step (using the FTC Robot Controller app on the phone).
-        frontRight  = hardwareMap.get(DcMotor.class, "Front_Right");
+
+
+
+//        frontRight  = hardwareMap.get(DcMotor.class, "Front_Right");
         backRight = hardwareMap.get(DcMotor.class, "Back_Right");
-        frontLeft  = hardwareMap.get(DcMotor.class, "Front_Left");
+//        frontLeft  = hardwareMap.get(DcMotor.class, "Front_Left");
         backLeft = hardwareMap.get(DcMotor.class, "Back_Left");
 //        armMotor = hardwareMap.get(DcMotor.class, "Arm_Motor");
 
@@ -90,12 +93,12 @@ DriveBaseV2 extends OpMode
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
 //        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontRight.setDirection(DcMotor.Direction.REVERSE);
+//        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+//        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -136,8 +139,8 @@ DriveBaseV2 extends OpMode
         denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(z), 1.0);
 
         // Send calculated power to wheels
-        frontLeft.setPower((y + x + z) / denominator);
-        frontRight.setPower(((y - x) - z) / denominator);
+//        frontLeft.setPower((y + x + z) / denominator);
+//        frontRight.setPower(((y - x) - z) / denominator);
         backRight.setPower((y + x - z) / denominator);
         backLeft.setPower((y - x + z) / denominator);
         // Show the elapsed game time and wheel power.
